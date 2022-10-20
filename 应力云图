@@ -1,0 +1,16 @@
+clear all
+close all
+clc
+x=0:0.2:10;
+y=0:0.2:10;
+[X,Y]=meshgrid(x,y);
+P=10;
+I_z=12;
+sigma_x=-P*Y*X/I_z;
+xm=linspace(min(y),max(y),20);
+ym=linspace(min(x),max(x),20);
+[XX,YY,ZZ]=griddata(X,Y,sigma_x,xm',ym,'V4');
+pcolor(XX,YY,ZZ);
+shading interp;
+colorbar;
+title('sigma_x=-P*Y*X/I_z')
