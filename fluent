@@ -1,0 +1,43 @@
+%% 清理并定义初始变量
+close all;
+clc;
+V_i=20;
+a = 1 ; %半径
+c =-a*2;
+b =a*2;
+n =a*50; %间隔
+[x,y]=meshgrid([c:(b-c)/n:b],[c:(b-c)/n:b]');
+%% 使圆柱内无流线
+for i=1:length(x);
+   for k=1:length(x);
+      if sqrt(x(i,k).^2+y(i,k).^2)<a;
+         x(i,k)=0;
+         y(i,k)=0;
+      end
+   end
+end
+%% 定义极性变量
+rho=sqrt(x.^2+y.^2);
+theta=atan2(y,x);
+%% 创建流函数和势函数
+z=V_i.*sin(theta).*rho.*(1-(a^2./(rho.^2)));
+w=V_i.*cos(theta).*rho.*(1+(a^2./(rho.^2)));
+%% 绘制流网图
+[u,v]=gradient(w);
+max(abs(curl(x,y,u,v)),[],'all');
+figure;
+hold on;
+shading interp;
+d =2.5;dd = 5;%d用来调整箭头的间距，dd用来调整箭头长短
+quiver(x(1:d:end,1:d:end),y(1:d:end,1:d:end),u(1:d:end,1:d:end)'./dd,v(1:d:end,1:d:end)'./dd,'color','r');%画箭头
+n=100;
+r=ones(1,n+1)*a;
+t=[0:2*pi/n:2*pi];
+contour(x,y,z,25,'-g','LineWidth',1);
+hold on ;
+contour(x,y,w,25,'-b','LineWidth',1);
+hold on;
+polar(t,r,'-k');
+axis square;
+title('圆柱体绕流');
+grid off
